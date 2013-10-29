@@ -1,5 +1,6 @@
 LOCAL_PATH:= $(call my-dir)
 
+
 # Build the Phone app which includes the emergency dialer. See Contacts
 # for the 'other' dialer.
 include $(CLEAR_VARS)
