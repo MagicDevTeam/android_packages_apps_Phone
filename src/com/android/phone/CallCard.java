@@ -20,6 +20,7 @@ import android.animation.LayoutTransition;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -1385,6 +1386,39 @@ public class CallCard extends LinearLayout
         // Other text fields:
         updateCallTypeLabel(call);
         // updateSocialStatus(socialStatusText, socialStatusBadge, call);  // Currently unused
+
+     // show Phone Location
+        if (!TextUtils.isEmpty(info.phoneNumber)) {
+            if (mContext.getResources().getConfiguration().locale.getCountry().equals("CN")) {
+                String num = info.phoneNumber;
+                num = (num.replace("-", "")).replace(" ", "");
+                Cursor cr = mContext.getContentResolver().query(
+                        Uri.parse("content://com.magicmod.mmgeoprovider/CN/" + num), null, null,
+                        null, null);
+                if (cr != null) {
+                    cr.moveToFirst();
+                    String location = cr.getString(0);
+                    cr.close();
+                    setMMGeoLocation(label, location);
+                } else {
+                    info.updateGeoDescription(mContext, info.phoneNumber);
+                    setMMGeoLocation(label, info.geoDescription);
+                }
+            } else {
+                info.updateGeoDescription(mContext, info.phoneNumber);
+                setMMGeoLocation(label, info.geoDescription);
+            }
+        }
+    }
+
+    private void setMMGeoLocation(String label, String location) {
+        if (label != null && !TextUtils.isEmpty(location)) {
+            mLabel.setText(label + "  " + location);
+            mLabel.setVisibility(View.VISIBLE);
+        } else if (!TextUtils.isEmpty(location)) {
+            mPhoneNumber.setText(location);
+            mPhoneNumber.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
