@@ -1626,8 +1626,7 @@ public class CallCard extends LinearLayout
                 Cursor cr = mContext.getContentResolver().query(
                         Uri.parse("content://com.magicmod.mmgeoprovider/CN/" + num), null, null,
                         null, null);
-                if (cr != null) {
-                    cr.moveToFirst();
+                if (cr != null && cr.moveToFirst()) {
                     String location = cr.getString(0);
                     cr.close();
                     setMMGeoLocation(label, location);
